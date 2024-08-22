@@ -197,7 +197,7 @@ def batch_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, seed=None, bat
     influence = np.exp(-nhbrdist / (2 * (threshold ** 2)))
 
     # Mini-batch training loop
-    for epoch in range(rlen):
+    for _ in range(rlen):
         # Shuffle data
         indices = np.random.permutation(n)
         for batch_start in range(0, n, batch_size):
@@ -259,7 +259,6 @@ def batch2_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, batch_size=0,
 
     # Handle batch size defaulting to full dataset if not specified
     n_samples = data.shape[0]
-    n_features = data.shape[1]
     if batch_size == 0:
         batch_size = n_samples
 
