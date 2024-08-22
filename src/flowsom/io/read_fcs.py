@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import csv
+import os
 import re
 
 import anndata as ad
+import flowio
+import numpy as np
 import pandas as pd
 import readfcs
-import numpy as np
-import flowio
-import os
-import csv
 
 
 def read_FCS(filepath):

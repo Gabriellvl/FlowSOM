@@ -182,7 +182,6 @@ def batch_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, seed=None, bat
         seed (int): Random seed for reproducibility.
         batch_size (int): The size of the mini-batches for training.
     """
-
     if seed is not None:
         np.random.seed(seed)
 
@@ -250,10 +249,10 @@ def batch2_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, batch_size=0,
         distf (function): Distance function to compute similarity (default is Euclidean).
         seed (int): Random seed for reproducibility (default is None).
 
-    Returns:
+    Returns
+    -------
         np.ndarray: Updated SOM nodes (codes) after training.
     """
-
     # Ensure reproducibility if seed is provided
     if seed is not None:
         np.random.seed(seed)
