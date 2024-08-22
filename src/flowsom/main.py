@@ -35,8 +35,10 @@ class FlowSOM:
         alpha: tuple[float, float] = (0.05, 0.01),
         seed: int | None = None,
         mad_allowed=4,
+        version="original",
         **kwargs,
     ):
+        logger.debug("Start init")
         """Initialize the FlowSOM AnnData object.
 
         :param inp: An AnnData or filepath to an FCS file
@@ -62,6 +64,7 @@ class FlowSOM:
         self.mst = mst
         self.alpha = alpha
         self.seed = seed
+        self.version = version
         # metacluster model params
         self.n_clusters = n_clusters
 
@@ -73,6 +76,7 @@ class FlowSOM:
             alpha=alpha,
             seed=seed,
             n_clusters=n_clusters,
+            variant="original",
             **kwargs,
         )
         self.mudata = MuData(

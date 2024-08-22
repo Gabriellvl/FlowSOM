@@ -22,6 +22,7 @@ class SOMEstimator(BaseClusterEstimator):
         codes=None,
         importance=None,
         seed=None,
+        version="original"
     ):
         super().__init__()
         self.xdim = xdim
@@ -35,6 +36,7 @@ class SOMEstimator(BaseClusterEstimator):
         self.codes = codes
         self.importance = importance
         self.seed = seed
+        self.version = version
 
     def fit(
         self,
@@ -109,6 +111,7 @@ class SOMEstimator(BaseClusterEstimator):
                 ncodes=n_codes,
                 rlen=self.rlen,
                 seed=self.seed,
+                version=self.version
             )
             if mst != 1:
                 nhbrdist: list[list[int]] = _dist_mst(codes)

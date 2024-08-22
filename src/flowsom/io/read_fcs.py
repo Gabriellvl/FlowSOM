@@ -5,6 +5,10 @@ import re
 import anndata as ad
 import pandas as pd
 import readfcs
+import numpy as np
+import flowio
+import os
+import csv
 
 
 def read_FCS(filepath):
@@ -45,3 +49,29 @@ def read_csv(filepath, spillover=None, **kwargs):
     if spillover is not None:
         ff.uns["meta"]["SPILL"] = pd.read_csv(spillover)
     return ff
+
+
+def read_FCS_numpy(filepath):
+    """Reads in an FCS file.
+
+    :param filepath: An array containing a full path to the FCS file
+    :type filepath: str
+    """
+    fcs_data = flowio.FlowData(filepath)
+    return np.reshape(fcs_data.events, (-1, fcs_data.channel_count))
+
+
+def read_csv_dataset(file_path):
+    """Reads in a CSV file."""
+    array_list = []
+    dir_path = os.path.dirname(file_path)
+
+    with open(file_path, newline="") as f_in:
+        reader = csv.reader(f_in)
+        for row in reader:
+            try:
+                array_list.append(read_FCS_numpy(f"{dir_path}/{row[1]}"))
+            except FileNotFoundError:
+                pass
+
+    return np.concatenate(array_list) if array_list else None
