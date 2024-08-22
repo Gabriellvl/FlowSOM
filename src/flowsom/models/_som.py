@@ -56,7 +56,7 @@ def cosine(p1, p2, px, n, ncodes):
     return (-nom / (np.sqrt(denom1) * np.sqrt(denom2))) + 1
 
 
-def SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, distf=eucl, seed=None, version="original"):
+def SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, distf=eucl, seed=None, version="batch2_sq"):
     if version == "original":
         return original_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, distf, seed)
     elif version == "squared":
