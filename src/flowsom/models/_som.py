@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from os import cpu_count
+
 import numpy as np
 from numba import jit, prange
 from numbasom import SOM as numbaSOM
@@ -78,7 +80,12 @@ def SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, distf=eucl, seed=Non
     elif version == "batch2_eucl":
         return batch_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, batch_size=50, distf=eucl, seed=42)
 
+    elif version == "batch2":
+        return batch2_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, batch_size=50, distf=eucl_sq, seed=42)
 
+    elif version == "batch2_cpu":
+        batch_size = int(data.shape[0] // (1.5*cpu_count()))
+        return batch2_SOM(data, codes, nhbrdist, alphas, radii, ncodes, rlen, batch_size=batch_size, distf=eucl_sq, seed=42)
 
 @jit(nopython=True, parallel=True)
 def map_data_to_codes(data, codes, distf=eucl):
