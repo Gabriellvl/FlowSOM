@@ -390,6 +390,10 @@ class FlowSOM:
             result = result.join(result_channels)
         return result
 
+    def _copy(self):
+        """Copy the model and use MuData's public copy operation for its data."""
+        return copy.deepcopy(self, {id(self.mudata): self.mudata.copy()})
+
     def new_data(self, inp, mad_allowed=4):
         """Map new data to a FlowSOM grid.
 
@@ -402,7 +406,7 @@ class FlowSOM:
         madAllowed * MAD. Default is 4.
         :type mad_allowed: int
         """
-        fsom_new = copy.deepcopy(self)
+        fsom_new = self._copy()
         fsom_new.read_input(inp)
         fsom_new.mad_allowed = mad_allowed
         X = fsom_new.get_cell_data()[:, self.cols_to_use].X
@@ -416,7 +420,7 @@ class FlowSOM:
         :param ids: An array of ids to subset
         :type ids: np.array
         """
-        fsom_subset = copy.deepcopy(self)
+        fsom_subset = self._copy()
         fsom_subset.mudata.mod["cell_data"] = fsom_subset.mudata["cell_data"][ids, :].copy()
         fsom_subset.model.subset(ids)
         fsom_subset._update_derived_values()
