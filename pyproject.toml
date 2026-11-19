@@ -30,12 +30,15 @@ dependencies = [
     "matplotlib",
     "pandas",
     "scipy",
-    "readfcs",
+    "flowio",
+    "readfcs<2",  # The FCS reader uses the v1 channel metadata layout.
+    "six",  # Required by fcsparser, which readfcs v1 uses.
     "pytometry",
     "scikit-learn",
     "igraph",
     "session-info",
     "numba",
+    "numbasom",
     "scanpy",
     "seaborn",
     "anndata",
