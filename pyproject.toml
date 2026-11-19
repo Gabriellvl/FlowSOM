@@ -30,7 +30,7 @@ dependencies = [
     "matplotlib",
     "pandas",
     "scipy",
-    "readfcs",
+    "readfcs<2",  # The FCS reader uses the v1 channel metadata layout.
     "pytometry",
     "scikit-learn",
     "igraph",
