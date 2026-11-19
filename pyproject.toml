@@ -36,6 +36,7 @@ dependencies = [
     "igraph",
     "session-info",
     "numba",
+    "numbasom",
     "scanpy",
     "seaborn",
     "anndata",
