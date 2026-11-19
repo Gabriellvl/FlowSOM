@@ -32,6 +32,7 @@ dependencies = [
     "scipy",
     "flowio",
     "readfcs<2",  # The FCS reader uses the v1 channel metadata layout.
+    "six",  # Required by fcsparser, which readfcs v1 uses.
     "pytometry",
     "scikit-learn",
     "igraph",
