@@ -1,0 +1,44 @@
+name: Contribution review notification
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  notify:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: contribution-review-${{ github.event.workflow_run.head_repository.id }}-${{ github.event.workflow_run.head_branch }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # The notifier reads GitHub metadata only and never checks out PR code.
+      - name: Mention Gabriel when a contribution is ready
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha=$(jq -r '.workflow_run.head_sha' "$GITHUB_EVENT_PATH")
+          branch=$(jq -r '.workflow_run.head_branch' "$GITHUB_EVENT_PATH")
+          fork=$(jq -r '.workflow_run.head_repository.full_name' "$GITHUB_EVENT_PATH")
+          [[ "$fork" != null && "$branch" != null ]] || exit 0
+          prs=$(gh api --method GET "repos/$GITHUB_REPOSITORY/pulls" --paginate \
+            -f state=open -f base=main -f head="${fork%%/*}:$branch")
+          numbers=$(jq -r --arg sha "$sha" --arg fork "$fork" --arg branch "$branch" \
+            '.[] | select(.head.sha == $sha and .head.repo.full_name == $fork and .head.ref == $branch and .draft == false and .user.login != "Gabriellvl") | .number' <<<"$prs")
+          marker="<!-- contribution-ready:$sha -->"
+          for number in $numbers; do
+            comments=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$number/comments")
+            if jq -e -s --arg marker "$marker" \
+              'any(.[][]; .user.login == "github-actions[bot]" and (.body | contains($marker)))' <<<"$comments" >/dev/null; then
+              continue
+            fi
+            gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+              -f body="$marker
+          @Gabriellvl, the automated checks passed. This contribution is ready for your review." --silent
+          done
